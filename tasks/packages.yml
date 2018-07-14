@@ -1,0 +1,14 @@
+- name: install apt packages
+  become: true
+  apt: pkg={{ item }} update_cache=yes cache_valid_time=3600 state=present
+  with_items:
+    - avahi-daemon
+    - build-essential
+    - git
+    - htop
+    - libssl-dev
+    - rsync
+    - tmux
+    - tree
+    - vim
+    - rsync

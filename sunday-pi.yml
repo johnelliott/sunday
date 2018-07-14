@@ -1,0 +1,78 @@
+---
+- hosts: sunday
+  gather_facts: yes
+
+  vars:
+    user: pi
+    hostname: sunday
+  vars_files:
+    - sunday-vars.yml
+    
+  tasks:
+    - import_tasks: ./tasks/packages.yml
+    - import_tasks: ./tasks/editor.yml
+    - import_tasks: ./tasks/vimrc.yml
+    - import_tasks: ./tasks/afpd.yml
+    - import_tasks: ./tasks/authorized_keys.yml
+
+    - name: install more packages
+      become: true
+      apt: pkg={{ item }} update_cache=yes cache_valid_time=3600 state=present
+      with_items:
+        - motion
+        - ssmtp
+        - ddclient
+        - natpmp-utils
+
+    - name: enable camera
+      lineinfile:
+        path: /etc/modules-load.d/modules.conf
+        line: bcm2835-v4l2 
+        create: yes
+
+    - name: motion conf
+      become: yes
+      template:
+        dest: /etc/motion/motion.conf
+        src: templates/sunday-motion.conf.j2
+        owner: root
+      notify: restart motion
+
+    - name: ddclient conf
+      become: yes
+      template:
+        dest: /etc/ddclient.conf
+        src: templates/sunday-ddclient.conf.j2
+        owner: root
+      notify: restart ddclient
+
+    - name: copy port forward service
+      become: yes
+      copy:
+        owner: root
+        dest: /etc/systemd/system/{{ item }}
+        src: files/{{ item }}
+      with_items:
+        - sunday-portfwd-asker@.service
+        - sunday-portfwd-asker@22.timer
+        - sunday-portfwd-asker@8081.timer
+
+    - name: enable port forward service
+      become: yes
+      systemd:
+        name: "{{ item }}"
+        state: started
+        daemon_reload: true
+      with_items:
+        - sunday-portfwd-asker@22.timer
+        - sunday-portfwd-asker@8081.timer
+
+  handlers:
+    - name: restart ddclient
+      systemd:
+        name: ddclient
+        state: reloaded
+    - name: restart motion
+      systemd:
+        name: ddclient
+        state: reloaded

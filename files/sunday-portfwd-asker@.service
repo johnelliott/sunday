@@ -1,0 +1,10 @@
+[Unit]
+Description=[sunday] forward ports with natpmpc 
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/natpmpc -a %i %i tcp 10000
+
+[Install]
+WantedBy=multi-user.target

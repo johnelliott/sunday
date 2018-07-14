@@ -1,0 +1,39 @@
+---
+- hosts: ecc
+  gather_facts: yes
+  tasks:
+    - name: install nginx
+      become: true
+      apt: pkg={{ item }} update_cache=yes cache_valid_time=3600 state=present
+      with_items:
+        - rsync
+        - nginx
+
+    - name: nginx site install
+      become: yes
+      copy:
+        dest: /etc/nginx/sites-available/sunday
+        src: files/sunday.nginx.conf
+        owner: root
+      notify: restart nginx
+
+    - name: nginx site enable
+      become: yes
+      file:
+        dest: /etc/nginx/sites-enabled/sunday
+        src: /etc/nginx/sites-available/sunday
+        state: link
+        owner: root
+      notify: restart nginx
+
+    - name: sync www dir
+      synchronize:
+        src: www
+        dest: /home/{{ ansible_user_id }}
+        delete: yes
+        recursive: yes
+
+  handlers:
+    - name: restart nginx
+      become: yes
+      service: name=nginx state=restarted

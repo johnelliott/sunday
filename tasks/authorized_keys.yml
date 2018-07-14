@@ -1,0 +1,5 @@
+- name: add github authorized_keys
+  authorized_key:
+    user: "{{ user }}"
+    state: present
+    key: https://github.com/johnelliott.keys

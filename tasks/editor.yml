@@ -1,0 +1,11 @@
+- name: use vim as editor
+  lineinfile:
+    dest: /home/{{ user }}/.profile
+    line: 'export EDITOR="vim"'
+    create: yes
+
+- name: use vim as visual
+  lineinfile:
+    dest: /home/{{ user }}/.profile
+    line: 'export VISUAL="vim"'
+    create: yes

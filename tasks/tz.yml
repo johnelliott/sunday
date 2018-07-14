@@ -1,0 +1,4 @@
+- name: timezone
+  become: true
+  timezone:
+    name: America/New_York

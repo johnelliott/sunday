@@ -1,0 +1,3 @@
+- name: Set the hostname
+  become: yes
+  command: hostnamectl set-hostname "{{ hostname }}"
