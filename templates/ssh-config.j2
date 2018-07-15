@@ -1,0 +1,6 @@
+Host aws-ec2
+User {{ aws_user }}
+  HostName {{ aws_host }}
+  IdentityFile ~/.ssh/{{ tunnel_key_name }}
+  IdentitiesOnly yes 
+  StrictHostKeyChecking no

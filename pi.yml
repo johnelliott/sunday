@@ -47,12 +47,21 @@
         owner: root
       notify: restart ddclient
 
-    - name: copy ssh config
+    - name: ssh config
       become: yes
-      copy:
-        src: files/ssh-config
+      template:
         dest: /home/{{ user }}/.ssh/config
-      notify: restart sunday-services
+        src: templates/ssh-config.j2
+        owner: root
+
+    - name: ssh keys
+      copy:
+        src: ~/.ssh/{{ item }}
+        dest: /home/{{ user }}/.ssh/{{ item }}
+        mode: "400"
+      with_items:
+        - "{{ tunnel_key_name }}"
+        - "{{ tunnel_key_name }}.pub"
 
     - name: copy systemd services
       become: yes

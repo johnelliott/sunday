@@ -1,6 +1,0 @@
-Host aws-ec2
-  User ubuntu
-  HostName ec2-34-238-52-100.compute-1.amazonaws.com
-  IdentityFile ~/.ssh/sunday2aws-ec2
-  IdentitiesOnly yes 
-  StrictHostKeyChecking no

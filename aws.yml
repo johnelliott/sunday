@@ -1,6 +1,10 @@
 ---
 - hosts: ecc
   gather_facts: yes
+  vars:
+    user: ubuntu
+  vars_files:
+    - vars.yml
   tasks:
     - name: install nginx
       become: true
@@ -9,7 +13,12 @@
         - rsync
         - nginx
 
-    # TODO ssh authorized keys
+    - name: add pi ssh key
+      authorized_key:
+        user: "{{ user }}"
+        state: present
+        comment: sunday_tunnel
+        key: "{{ lookup('file', '~/.ssh/{{ tunnel_key_name }}.pub') }}"
 
     - name: nginx site install
       become: yes
