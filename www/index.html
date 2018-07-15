@@ -14,19 +14,50 @@
         flex-direction: column;
         align-items: center;
         justify-content: space-around;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
       }
       .title {
         margin: 20px auto;
         max-height: 15vh;
       }
-      .stream {
-        font-size: 80px;
+      .stream__image { font-size: 80px; }
+      .stream__container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
       }
+      @keyframes spin {
+        from {
+          transform:rotate(0deg);
+        }
+        to {
+          transform:rotate(-360deg);
+        }
+      }
+      .image__container--loading::after {
+        font-size: 120px;
+        animation-name: 'spin';
+        animation-duration: 3s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+        content: '🐕';
+      }
+      .stream__container::after {
+        text-align: center;
+      }
+      .stream__container:empty::after { content: 'no img ☹️'; }
     </style>
   </head>
   <body background="#eee">
-    <img class="title" src="sunday.gif" alt="SUNDAY!"/>
-    <div class="stream"><img src="/stream" alt="🐕" border="0px"/></div>
+    <img class="title" src="sunday.gif" alt="SUNDAY!">
+    <div class="stream__container image__container--loading"><img
+      class="stream__image"
+      src="/stream"
+      alt="🐕"
+      onload="this.parentNode.classList.remove('image__container--loading');"
+      onerror="console.log('failed to load sundaycam ☹️');this.parentNode.classList.remove('image__container--loading');this.remove();"
+      this.remove();"></div>
     <p>🍒🌪</p>
   </body>
 </html>
