@@ -29,12 +29,13 @@
         path: /etc/modules-load.d/modules.conf
         line: bcm2835-v4l2 
         create: yes
+      notify: restart motion
 
     - name: motion conf
       become: yes
       template:
         dest: /etc/motion/motion.conf
-        src: templates/sunday-motion.conf.j2
+        src: templates/motion.conf.j2
         owner: root
       notify: restart motion
 
@@ -42,32 +43,34 @@
       become: yes
       template:
         dest: /etc/ddclient.conf
-        src: templates/sunday-ddclient.conf.j2
+        src: templates/ddclient.conf.j2
         owner: root
       notify: restart ddclient
 
     - name: copy ssh config
       become: yes
       copy:
-        src: files/sunday-ssh-config
+        src: files/ssh-config
         dest: /home/{{ user }}/.ssh/config
+      notify: restart sunday-services
 
     - name: copy systemd services
       become: yes
       copy:
         owner: root
-        dest: /etc/systemd/system/{{ item }}
+        dest: /etc/systemd/system/sunday-{{ item }}
         src: files/{{ item }}
       with_items:
-        - sunday-portfwd-asker@.service
-        - sunday-portfwd-asker@22.timer
-        - sunday-portfwd-tunnel.service
+        - portfwd-asker@.service
+        - portfwd-asker@22.timer
+        - portfwd-tunnel.service
+      notify: restart sunday-services
 
     - name: enable services
       become: yes
       systemd:
         name: "{{ item }}"
-        state: enabled
+        enabled: yes
         daemon_reload: true
       with_items:
         - ddclient
@@ -88,6 +91,10 @@
         - sunday-portfwd-tunnel.service
 
   handlers:
+    - name: restart sunday-services
+      systemd:
+        name: sunday-services
+        state: restarted
 
     - name: restart ddclient
       systemd:

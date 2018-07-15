@@ -9,6 +9,8 @@
         - rsync
         - nginx
 
+    # TODO ssh authorized keys
+
     - name: nginx site install
       become: yes
       copy:
