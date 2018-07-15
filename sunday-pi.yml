@@ -61,24 +61,40 @@
       with_items:
         - sunday-portfwd-asker@.service
         - sunday-portfwd-asker@22.timer
-        - sunday-portfwd-asker@8081.timer
+        - sunday-portfwd-tunnel.service
 
-    - name: enable port forward service
+    - name: enable services
+      become: yes
+      systemd:
+        name: "{{ item }}"
+        state: enabled
+        daemon_reload: true
+      with_items:
+        - ddclient
+        - motion
+        - sunday-portfwd-asker@22.timer
+        - sunday-portfwd-tunnel.service
+
+    - name: start services
       become: yes
       systemd:
         name: "{{ item }}"
         state: started
         daemon_reload: true
       with_items:
+        - ddclient
+        - motion
         - sunday-portfwd-asker@22.timer
-        - sunday-portfwd-asker@8081.timer
+        - sunday-portfwd-tunnel.service
 
   handlers:
+
     - name: restart ddclient
       systemd:
         name: ddclient
         state: reloaded
+
     - name: restart motion
       systemd:
-        name: ddclient
+        name: motion
         state: reloaded
