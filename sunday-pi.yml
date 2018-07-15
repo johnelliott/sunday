@@ -46,7 +46,13 @@
         owner: root
       notify: restart ddclient
 
-    - name: copy port forward service
+    - name: copy ssh config
+      become: yes
+      copy:
+        src: files/sunday-ssh-config
+        dest: /home/{{ user }}/.ssh/config
+
+    - name: copy systemd services
       become: yes
       copy:
         owner: root
