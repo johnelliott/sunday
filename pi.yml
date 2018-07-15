@@ -6,7 +6,7 @@
     user: pi
     hostname: sunday
   vars_files:
-    - sunday-vars.yml
+    - vars.yml
     
   tasks:
     - import_tasks: ./tasks/packages.yml
