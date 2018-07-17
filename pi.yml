@@ -1,14 +1,17 @@
 ---
-- hosts: sunday
+- hosts: minisunday
   gather_facts: yes
 
   vars:
     user: pi
-    hostname: sunday
+    hostname: minisunday
   vars_files:
     - vars.yml
     
   tasks:
+    #- import_tasks: ./tasks/expand-rootfs.yml
+    #- import_tasks: ./tasks/tz.yml
+    #- import_tasks: ./tasks/hostname.yml
     - import_tasks: ./tasks/packages.yml
     - import_tasks: ./tasks/editor.yml
     - import_tasks: ./tasks/vimrc.yml
@@ -20,11 +23,13 @@
       apt: pkg={{ item }} update_cache=yes cache_valid_time=3600 state=present
       with_items:
         - motion
+        - mpack
         - ssmtp
         - ddclient
         - natpmp-utils
 
     - name: enable camera
+      become: yes
       lineinfile:
         path: /etc/modules-load.d/modules.conf
         line: bcm2835-v4l2 
@@ -100,10 +105,11 @@
         - sunday-portfwd-tunnel.service
 
   handlers:
-    - name: restart sunday-services
-      systemd:
-        name: sunday-services
-        state: restarted
+    # TODO fix
+    #- name: restart sunday-services
+    #  systemd:
+    #    name: sunday-services
+    #    state: restarted
 
     - name: restart ddclient
       systemd:
