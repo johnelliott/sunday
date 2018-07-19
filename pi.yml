@@ -1,20 +1,17 @@
 ---
-- hosts: minisunday
+- hosts: sundays
   gather_facts: yes
 
   vars:
     user: pi
-    hostname: minisunday
   vars_files:
     - vars.yml
     
   tasks:
-    #- import_tasks: ./tasks/expand-rootfs.yml
-    #- import_tasks: ./tasks/tz.yml
-    #- import_tasks: ./tasks/hostname.yml
     - import_tasks: ./tasks/packages.yml
     - import_tasks: ./tasks/editor.yml
     - import_tasks: ./tasks/vimrc.yml
+    - import_tasks: ./tasks/tmux.conf.yml
     - import_tasks: ./tasks/afpd.yml
     - import_tasks: ./tasks/authorized_keys.yml
 
@@ -34,7 +31,6 @@
         path: /etc/modules-load.d/modules.conf
         line: bcm2835-v4l2 
         create: yes
-      notify: restart motion
 
     - name: motion conf
       become: yes
@@ -59,6 +55,13 @@
         src: templates/ssh-config.j2
         owner: root
 
+    - name: copy sunday-motion service
+      become: true
+      copy:
+        src: files/sunday-motion.service
+        dest: /etc/systemd/system/sunday-motion.service
+        owner: root
+
     - name: ssh keys
       copy:
         src: ~/.ssh/{{ item }}
@@ -78,7 +81,15 @@
         - portfwd-asker@.service
         - portfwd-asker@22.timer
         - portfwd-tunnel.service
-      notify: restart sunday-services
+
+          #- name: disable default motion service
+          #  become: yes
+          #  systemd:
+          #    name: motion
+          #    state: stopped
+          #    enabled: false
+          #    masked: true
+          #    daemon_reload: true
 
     - name: enable services
       become: yes
@@ -88,7 +99,7 @@
         daemon_reload: true
       with_items:
         - ddclient
-        - motion
+        - sunday-motion
         - sunday-portfwd-asker@22.timer
         - sunday-portfwd-tunnel.service
 
@@ -100,23 +111,22 @@
         daemon_reload: true
       with_items:
         - ddclient
-        - motion
+        - sunday-motion
         - sunday-portfwd-asker@22.timer
         - sunday-portfwd-tunnel.service
 
   handlers:
-    # TODO fix
-    #- name: restart sunday-services
-    #  systemd:
-    #    name: sunday-services
-    #    state: restarted
-
     - name: restart ddclient
       systemd:
         name: ddclient
         state: reloaded
 
-    - name: restart motion
+    - name: restart services
+      become: yes
       systemd:
-        name: motion
-        state: reloaded
+        name: "{{ item }}"
+        state: restarted
+      with_items:
+        - sunday-motion
+        - sunday-portfwd-asker@22.timer
+        - sunday-portfwd-tunnel.service
