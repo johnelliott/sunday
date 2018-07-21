@@ -1,12 +1,6 @@
 ---
 - hosts: sundays
   gather_facts: yes
-
-  vars:
-    user: pi
-  vars_files:
-    - vars.yml
-    
   tasks:
     - import_tasks: ./tasks/packages.yml
     - import_tasks: ./tasks/editor.yml

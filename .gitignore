@@ -2,3 +2,5 @@ wpa_supplicant.conf
 *.retry
 *.backup
 *vars.yml
+inventory.*
+backups

@@ -3,10 +3,6 @@
 
   vars:
     backup_dest: backups
-    user: pi
-
-  vars_files:
-    - vars.yml
 
   tasks:
     - name: get sunday config
