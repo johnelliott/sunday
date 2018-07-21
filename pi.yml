@@ -41,7 +41,7 @@
         dest: /etc/ddclient.conf
         src: templates/ddclient.conf.j2
         owner: root
-      notify: restart ddclient
+      notify: restart services
 
     - name: ssh config
       become: yes
@@ -115,17 +115,13 @@
         - sunday-portfwd-tunnel.service
 
   handlers:
-    - name: restart ddclient
-      systemd:
-        name: ddclient
-        state: restarted
-
     - name: restart services
       become: yes
       systemd:
         name: "{{ item }}"
         state: restarted
       with_items:
+        - ddclient
         - sunday-motion
         - sunday-portfwd-natpmp@22.timer
         - sunday-portfwd-upnp@22.timer
