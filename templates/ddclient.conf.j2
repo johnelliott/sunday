@@ -13,6 +13,6 @@ ssl=yes					# use ssl-support.  Works with ssl-library
 use=web, web=checkip.dyndns.org/, web-skip='IP Address' # found after IP Address
 
 protocol=googledomains
-login={{ ddclient_login }}
-password={{ ddclient_password }}
+login='{{ ddclient_login }}'
+password='{{ ddclient_password }}'
 {{ camera_domain }}
