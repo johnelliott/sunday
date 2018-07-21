@@ -13,6 +13,7 @@
       with_items:
         - /etc/wpa_supplicant/wpa_supplicant.conf
         - /etc/ddclient.conf
+        - /etc/default/ddclient
         - /etc/modules-load.d/modules.conf
         - /etc/motion/motion.conf
         - /home/{{ user }}/.ssh/config

@@ -40,7 +40,7 @@
         dest: /etc/ddclient.conf
         src: templates/ddclient.conf.j2
         owner: root
-      notify: restart services
+      notify: restart ddclient
 
     - name: ssh config
       become: yes
@@ -120,9 +120,22 @@
         name: "{{ item }}"
         state: restarted
       with_items:
-        - ddclient
         - sunday-motion
         - sunday-portfwd-natpmp@22.timer
         - sunday-portfwd-upnp@22.timer
         - sunday-portfwd-tunnel.service
+      listen: restart services
 
+    - name: remove ddclient cache
+      become: yes
+      file:
+        path: /var/cache/ddclient/ddclient.cache
+        state: absent
+      listen: restart ddclient
+
+    - name: reload ddclient
+      become: yes
+      systemd:
+        name: ddclient
+        state: restarted
+      listen: restart ddclient
