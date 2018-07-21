@@ -1,5 +1,5 @@
 ---
-- hosts: sundays
+- hosts: sundaycams
   gather_facts: yes
   tasks:
     - import_tasks: ./tasks/packages.yml
@@ -33,7 +33,7 @@
         dest: /etc/motion/motion.conf
         src: templates/motion.conf.j2
         owner: root
-      notify: restart motion
+      notify: restart services
 
     - name: ddclient conf
       become: yes
@@ -111,14 +111,14 @@
         - ddclient
         - sunday-motion
         - sunday-portfwd-natpmp@22.timer
-        - sunday-portfwd-natpmp@22.timer
+        - sunday-portfwd-upnp@22.timer
         - sunday-portfwd-tunnel.service
 
   handlers:
     - name: restart ddclient
       systemd:
         name: ddclient
-        state: reloaded
+        state: restarted
 
     - name: restart services
       become: yes
