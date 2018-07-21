@@ -1,0 +1,22 @@
+---
+- hosts: sundaycams
+
+  vars:
+    backup_dest: backups
+    user: pi
+
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: get sunday config
+      become: true
+      fetch:
+        src: "{{ item }}"
+        dest: "{{ backup_dest }}"
+      with_items:
+        - /etc/wpa_supplicant/wpa_supplicant.conf
+        - /etc/ddclient.conf
+        - /etc/modules-load.d/modules.conf
+        - /etc/motion/motion.conf
+        - /home/{{ user }}/.ssh/config
