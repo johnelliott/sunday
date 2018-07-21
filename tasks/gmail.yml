@@ -1,0 +1,22 @@
+- name: install more packages
+  become: true
+  apt: pkg={{ item }} update_cache=yes cache_valid_time=3600 state=present
+  with_items:
+    - mpack
+    - ssmtp
+
+- name: ssmtp conf
+  become: yes
+  template:
+    dest: /etc/ssmtp/ssmtp.conf
+    src: templates/ssmtp.conf.j2
+    owner: root
+    group: mail
+    mode: "640"
+
+- name: root email alias
+  become: true
+  lineinfile:
+    path: /etc/ssmtp/revaliases
+    state: present
+    line: root:{{ email }}:mailhub

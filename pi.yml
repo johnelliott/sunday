@@ -2,20 +2,19 @@
 - hosts: sundaycams
   gather_facts: yes
   tasks:
-    - import_tasks: ./tasks/packages.yml
-    - import_tasks: ./tasks/editor.yml
-    - import_tasks: ./tasks/vimrc.yml
-    - import_tasks: ./tasks/tmux.conf.yml
-    - import_tasks: ./tasks/afpd.yml
-    - import_tasks: ./tasks/authorized_keys.yml
+    - import_tasks: tasks/packages.yml
+    - import_tasks: tasks/editor.yml
+    - import_tasks: tasks/vimrc.yml
+    - import_tasks: tasks/tmux.conf.yml
+    - import_tasks: tasks/afpd.yml
+    - import_tasks: tasks/authorized_keys.yml
+    - import_tasks: tasks/gmail.yml
 
     - name: install more packages
       become: true
       apt: pkg={{ item }} update_cache=yes cache_valid_time=3600 state=present
       with_items:
         - motion
-        - mpack
-        - ssmtp
         - ddclient
         - natpmp-utils
         - miniupnpc
@@ -126,3 +125,4 @@
         - sunday-portfwd-natpmp@22.timer
         - sunday-portfwd-upnp@22.timer
         - sunday-portfwd-tunnel.service
+
