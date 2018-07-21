@@ -1,5 +1,5 @@
 [Unit]
-Description=run port fwd interval
+Description=NAT-PMP port fwd interval
 
 [Timer]
 OnCalendar=hourly

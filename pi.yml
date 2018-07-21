@@ -18,6 +18,7 @@
         - ssmtp
         - ddclient
         - natpmp-utils
+        - miniupnpc
 
     - name: enable camera
       become: yes
@@ -72,9 +73,11 @@
         dest: /etc/systemd/system/sunday-{{ item }}
         src: files/{{ item }}
       with_items:
-        - portfwd-asker@.service
-        - portfwd-asker@22.timer
         - portfwd-tunnel.service
+        - portfwd-natpmp@.service
+        - portfwd-natpmp@22.timer
+        - portfwd-upnp@.service
+        - portfwd-upnp@22.timer
 
           #- name: disable default motion service
           #  become: yes
@@ -94,7 +97,8 @@
       with_items:
         - ddclient
         - sunday-motion
-        - sunday-portfwd-asker@22.timer
+        - sunday-portfwd-natpmp@22.timer
+        - sunday-portfwd-upnp@22.timer
         - sunday-portfwd-tunnel.service
 
     - name: start services
@@ -106,7 +110,8 @@
       with_items:
         - ddclient
         - sunday-motion
-        - sunday-portfwd-asker@22.timer
+        - sunday-portfwd-natpmp@22.timer
+        - sunday-portfwd-natpmp@22.timer
         - sunday-portfwd-tunnel.service
 
   handlers:
@@ -122,5 +127,6 @@
         state: restarted
       with_items:
         - sunday-motion
-        - sunday-portfwd-asker@22.timer
+        - sunday-portfwd-natpmp@22.timer
+        - sunday-portfwd-upnp@22.timer
         - sunday-portfwd-tunnel.service
