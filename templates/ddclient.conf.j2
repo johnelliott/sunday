@@ -1,4 +1,4 @@
-daemon=300				# check every 300 seconds
+daemon=600				# check every 600 seconds
 syslog=yes				# log update msgs to syslog
 mail=root				# mail all msgs to root
 mail-failure=root			# mail failed update msgs to root
@@ -12,10 +12,7 @@ ssl=yes					# use ssl-support.  Works with ssl-library
 ## get banned from their service.
 use=web, web=checkip.dyndns.org/, web-skip='IP Address' # found after IP Address
 
-##
-## Google Domains (www.google.com/domains)
-##
-protocol=googledomains,
+protocol=googledomains
 login={{ ddclient_login }}
 password={{ ddclient_password }}
-sunday.primitivemachine.com
+{{ camera_domain }}
