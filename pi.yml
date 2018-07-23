@@ -42,6 +42,14 @@
         owner: root
       notify: restart ddclient
 
+    - name: ddclient daemon
+      become: yes
+      lineinfile:
+        path: /etc/default/ddclient
+        line: run_daemon="true"
+        create: yes
+      notify: restart ddclient
+
     - name: ssh config
       become: yes
       template:
