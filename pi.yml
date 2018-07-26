@@ -41,6 +41,8 @@
         src: templates/ddclient.conf.j2
         owner: root
       notify: restart ddclient
+      tags:
+        - ddclient
 
     - name: ddclient daemon
       become: yes
@@ -49,6 +51,8 @@
         line: run_daemon="true"
         create: yes
       notify: restart ddclient
+      tags:
+        - ddclient
 
     - name: ssh config
       become: yes
@@ -140,6 +144,8 @@
         path: /var/cache/ddclient/ddclient.cache
         state: absent
       listen: restart ddclient
+      tags:
+        - ddclient
 
     - name: reload ddclient
       become: yes
@@ -147,3 +153,5 @@
         name: ddclient
         state: restarted
       listen: restart ddclient
+      tags:
+        - ddclient
