@@ -54,6 +54,18 @@
       tags:
         - ddclient
 
+    - name: ddclient daemon_interval
+      become: yes
+      lineinfile:
+        path: /etc/default/ddclient
+        regexp: '^daemon_interval'
+        line: daemon_interval="300"
+        create: yes
+        insertafter: true
+      notify: restart ddclient
+      tags:
+        - ddclient
+
     - name: ssh config
       become: yes
       template:
@@ -147,7 +159,7 @@
       tags:
         - ddclient
 
-    - name: reload ddclient
+    - name: restart ddclient
       become: yes
       systemd:
         name: ddclient
