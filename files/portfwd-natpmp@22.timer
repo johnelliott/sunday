@@ -1,9 +1,0 @@
-[Unit]
-Description=NAT-PMP port fwd interval
-
-[Timer]
-OnCalendar=hourly
-Persistent=true
-
-[Install]
-WantedBy=timers.target

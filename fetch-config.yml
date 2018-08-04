@@ -12,9 +12,7 @@
         dest: "{{ backup_dest }}"
       with_items:
         - /etc/wpa_supplicant/wpa_supplicant.conf
-        - /etc/ddclient.conf
-        - /etc/default/ddclient
         - /etc/modules-load.d/modules.conf
         - /etc/motion/motion.conf
-        - /etc/systemd/system/sunday-portfwd-tunnel.service
+        - /etc/systemd/system/sunday-tunnel.service
         - /home/{{ user }}/.ssh/config

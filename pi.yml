@@ -6,7 +6,6 @@
     - import_tasks: tasks/editor.yml
     - import_tasks: tasks/vimrc.yml
     - import_tasks: tasks/tmux.conf.yml
-    - import_tasks: tasks/afpd.yml
     - import_tasks: tasks/authorized_keys.yml
     - import_tasks: tasks/gmail.yml
 
