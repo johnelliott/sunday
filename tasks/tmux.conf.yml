@@ -1,0 +1,4 @@
+- name: download .tmux.conf
+  get_url:
+    url: https://raw.githubusercontent.com/johnelliott/dotfiles/master/.tmux.conf
+    dest: ~/.tmux.conf
