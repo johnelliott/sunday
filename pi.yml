@@ -15,9 +15,6 @@
       apt: pkg={{ item }} update_cache=yes cache_valid_time=3600 state=present
       with_items:
         - motion
-        - ddclient
-        - natpmp-utils
-        - miniupnpc
 
     - name: enable camera
       become: yes
@@ -33,38 +30,6 @@
         src: templates/motion.conf.j2
         owner: root
       notify: restart services
-
-    - name: ddclient conf
-      become: yes
-      template:
-        dest: /etc/ddclient.conf
-        src: templates/ddclient.conf.j2
-        owner: root
-      notify: restart ddclient
-      tags:
-        - ddclient
-
-    - name: ddclient daemon
-      become: yes
-      lineinfile:
-        path: /etc/default/ddclient
-        line: run_daemon="true"
-        create: yes
-      notify: restart ddclient
-      tags:
-        - ddclient
-
-    - name: ddclient daemon_interval
-      become: yes
-      lineinfile:
-        path: /etc/default/ddclient
-        regexp: '^daemon_interval'
-        line: daemon_interval="300"
-        create: yes
-        insertafter: true
-      notify: restart ddclient
-      tags:
-        - ddclient
 
     - name: ssh config
       become: yes
@@ -91,25 +56,21 @@
 
     - name: copy systemd services
       become: yes
-      copy:
+      template:
         owner: root
-        dest: /etc/systemd/system/sunday-{{ item }}
-        src: files/{{ item }}
+        dest: /etc/systemd/system/sunday-tunnel.service
+        src: templates/sunday-tunnel.service.j2
       with_items:
-        - portfwd-tunnel.service
-        - portfwd-natpmp@.service
-        - portfwd-natpmp@22.timer
-        - portfwd-upnp@.service
-        - portfwd-upnp@22.timer
+        -
 
-          #- name: disable default motion service
-          #  become: yes
-          #  systemd:
-          #    name: motion
-          #    state: stopped
-          #    enabled: false
-          #    masked: true
-          #    daemon_reload: true
+    #- name: disable default motion service
+    #  become: yes
+    #  systemd:
+    #    name: motion
+    #    state: stopped
+    #    enabled: false
+    #    masked: true
+    #    daemon_reload: true
 
     - name: enable services
       become: yes
@@ -118,11 +79,8 @@
         enabled: yes
         daemon_reload: true
       with_items:
-        - ddclient
         - sunday-motion
-        - sunday-portfwd-natpmp@22.timer
-        - sunday-portfwd-upnp@22.timer
-        - sunday-portfwd-tunnel.service
+        - sunday-tunnel
 
     - name: start services
       become: yes
@@ -131,11 +89,8 @@
         state: started
         daemon_reload: true
       with_items:
-        - ddclient
         - sunday-motion
-        - sunday-portfwd-natpmp@22.timer
-        - sunday-portfwd-upnp@22.timer
-        - sunday-portfwd-tunnel.service
+        - sunday-tunnel
 
   handlers:
     - name: restart services
@@ -145,25 +100,5 @@
         state: restarted
       with_items:
         - sunday-motion
-        - sunday-portfwd-natpmp@22.timer
-        - sunday-portfwd-upnp@22.timer
-        - sunday-portfwd-tunnel.service
+        - sunday-tunnel
       listen: restart services
-
-    - name: remove ddclient cache
-      become: yes
-      file:
-        path: /var/cache/ddclient/ddclient.cache
-        state: absent
-      listen: restart ddclient
-      tags:
-        - ddclient
-
-    - name: restart ddclient
-      become: yes
-      systemd:
-        name: ddclient
-        state: restarted
-      listen: restart ddclient
-      tags:
-        - ddclient

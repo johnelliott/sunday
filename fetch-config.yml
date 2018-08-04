@@ -16,4 +16,5 @@
         - /etc/default/ddclient
         - /etc/modules-load.d/modules.conf
         - /etc/motion/motion.conf
+        - /etc/systemd/system/sunday-portfwd-tunnel.service
         - /home/{{ user }}/.ssh/config
