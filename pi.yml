@@ -15,6 +15,13 @@
       with_items:
         - motion
 
+    - name: copy wpa supp
+      become: true
+      copy:
+        src: files/wpa_supplicant.conf
+        dest: /etc/wpa_supplicant/wpa_supplicant.conf
+        owner: root
+
     - name: enable camera
       become: yes
       lineinfile:
